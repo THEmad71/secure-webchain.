@@ -1,5 +1,6 @@
-from flask import Flask, request
+from flask import Flask
 from flask_cors import CORS
+
 from routes.auth_routes import auth_bp
 from routes.hash_routes import hash_bp
 from routes.signature_routes import signature_bp
@@ -8,10 +9,16 @@ from routes.blockchain_routes import blockchain_bp
 
 app = Flask(__name__)
 
-# flask-cors handles OPTIONS requests and headers automatically.
-# This configuration covers the same functionality as your previous manual code.
-CORS(app, resources={r"/api/*": {"origins": "*"}})
+# flask-cors handles preflight (OPTIONS) and header injection automatically.
+# This configuration is cleaner and prevents header duplication errors.
+CORS(
+    app,
+    resources={r"/*": {"origins": "*"}},
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+)
 
+# Register Blueprints
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(hash_bp, url_prefix="/api/hash")
 app.register_blueprint(signature_bp, url_prefix="/api/signature")
