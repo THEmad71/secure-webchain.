@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from routes.auth_routes import auth_bp
 from routes.hash_routes import hash_bp
@@ -8,14 +8,9 @@ from routes.blockchain_routes import blockchain_bp
 
 app = Flask(__name__)
 
-# Using flask-cors is sufficient; it automatically handles 
-# necessary headers for CORS preflight requests.
-CORS(
-    app,
-    resources={r"/*": {"origins": "*"}},
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-)
+# flask-cors handles OPTIONS requests and headers automatically.
+# This configuration covers the same functionality as your previous manual code.
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.register_blueprint(auth_bp, url_prefix="/api/auth")
 app.register_blueprint(hash_bp, url_prefix="/api/hash")
@@ -40,4 +35,4 @@ def show_routes():
 
 # Corrected: Added double underscores for the name == main check
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port=5000)
+    app.run(debug=False, host="0.0.0.0", port=5000)
