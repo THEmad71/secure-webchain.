@@ -27,7 +27,8 @@ app.register_blueprint(blockchain_bp, url_prefix="/api/blockchain")
 
 @app.route("/")
 def home():
-    return {"message": "SecureWebChain Backend is running"}
+    return {"message": "SecureWebChain Backend is running",
+            "version": "cors-fix-v2"}
 
 @app.route("/routes")
 def show_routes():
@@ -43,3 +44,4 @@ def show_routes():
 # Corrected: Added double underscores for the name == main check
 if __name__ == "__main__":
     app.run(debug=False, host="0.0.0.0", port=5000)
+
