@@ -16,7 +16,6 @@ SAMPLE_PATH = os.path.join(MODEL_DIR, "sample_traffic.csv")
 ids_pipeline = None
 model_metadata = {}
 
-
 def load_model():
     global ids_pipeline, model_metadata
     if ids_pipeline is None:
@@ -28,7 +27,6 @@ def load_model():
             with open(METADATA_PATH, "r") as f:
                 model_metadata = json.load(f)
     return ids_pipeline
-
 
 @ids_bp.route("/test", methods=["GET"])
 def ids_test():
@@ -44,7 +42,6 @@ def ids_test():
             "message": str(e)
         }), 500
 
-
 @ids_bp.route("/metadata", methods=["GET"])
 def get_metadata():
     try:
@@ -52,7 +49,10 @@ def get_metadata():
         safe_metadata = {
             "model_name": model_metadata.get("model_name", "Random Forest IDS"),
             "dataset": model_metadata.get("dataset", "UNSW-NB15"),
-            "target_mapping": model_metadata.get("target_mapping", {"0": "Normal", "1": "Attack"}),
+            "target_mapping": model_metadata.get(
+                "target_mapping",
+                {"0": "Normal", "1": "Attack"}
+            ),
             "metrics": model_metadata.get("metrics", {}),
             "feature_columns": model_metadata.get("feature_columns", []),
             "top_features": model_metadata.get("top_features", []),
@@ -61,7 +61,6 @@ def get_metadata():
         return jsonify(safe_metadata)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 @ids_bp.route("/sample", methods=["GET"])
 def get_sample():
@@ -77,15 +76,18 @@ def get_sample():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-@ids_bp.route("/predict", methods=["POST"])
+@ids_bp.route("/predict", methods=["POST", "OPTIONS"])
 def predict_intrusion():
     try:
+        # Browser preflight request handle
+        if request.method == "OPTIONS":
+            return jsonify({"status": "ok"}), 200
+            
         model = load_model()
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if not data:
             return jsonify({"error": "No JSON data received"}), 400
-
+            
         feature_columns = model_metadata.get("feature_columns", [])
         if feature_columns:
             input_data = {}
@@ -100,8 +102,9 @@ def predict_intrusion():
         else:
             missing_features = []
             input_df = pd.DataFrame([data])
-
+            
         prediction = int(model.predict(input_df)[0])
+        
         if hasattr(model, "predict_proba"):
             probabilities = model.predict_proba(input_df)[0]
             normal_probability = float(probabilities[0])
@@ -111,7 +114,7 @@ def predict_intrusion():
             normal_probability = None
             attack_probability = None
             confidence = None
-
+            
         result = "Attack" if prediction == 1 else "Normal"
         if result == "Attack":
             if confidence is not None and confidence >= 0.85:
@@ -122,7 +125,7 @@ def predict_intrusion():
                 risk_level = "Low"
         else:
             risk_level = "Low"
-
+            
         return jsonify({
             "prediction": result,
             "label": prediction,
@@ -136,19 +139,22 @@ def predict_intrusion():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-@ids_bp.route("/predict-batch", methods=["POST"])
+@ids_bp.route("/predict-batch", methods=["POST", "OPTIONS"])
 def predict_batch():
     try:
+        # Browser preflight request handle
+        if request.method == "OPTIONS":
+            return jsonify({"status": "ok"}), 200
+            
         model = load_model()
-        data = request.get_json()
+        data = request.get_json(silent=True)
         if not data or "records" not in data:
             return jsonify({"error": "records array is required"}), 400
-
+            
         records = data["records"]
         if not isinstance(records, list) or len(records) == 0:
             return jsonify({"error": "records must be a non-empty list"}), 400
-
+            
         feature_columns = model_metadata.get("feature_columns", [])
         processed_records = []
         for record in records:
@@ -158,18 +164,19 @@ def predict_batch():
                 })
             else:
                 processed_records.append(record)
-
+                
         input_df = pd.DataFrame(processed_records)
         predictions = model.predict(input_df)
-
+        
         if hasattr(model, "predict_proba"):
             probabilities = model.predict_proba(input_df)
         else:
             probabilities = None
-
+            
         results = []
         attack_count = 0
         normal_count = 0
+        
         for i, pred in enumerate(predictions):
             pred_int = int(pred)
             result = "Attack" if pred_int == 1 else "Normal"
@@ -177,7 +184,7 @@ def predict_batch():
                 attack_count += 1
             else:
                 normal_count += 1
-
+                
             if probabilities is not None:
                 normal_prob = float(probabilities[i][0])
                 attack_prob = float(probabilities[i][1])
@@ -186,7 +193,7 @@ def predict_batch():
                 normal_prob = None
                 attack_prob = None
                 confidence = None
-
+                
             results.append({
                 "index": i,
                 "prediction": result,
@@ -195,7 +202,7 @@ def predict_batch():
                 "normal_probability": normal_prob,
                 "attack_probability": attack_prob
             })
-
+            
         return jsonify({
             "total": len(results),
             "normal_count": normal_count,
