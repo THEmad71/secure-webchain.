@@ -11,7 +11,6 @@ import BlockchainLogs from "./pages/BlockchainLogs";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import IntrusionDetection from "./pages/IntrusionDetection";
-import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -22,78 +21,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/intrusion-detection"
-          element={
-            <ProtectedRoute>
-              <IntrusionDetection />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/hash"
-          element={
-            <ProtectedRoute>
-              <HashGenerator />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/signature"
-          element={
-            <ProtectedRoute>
-              <DigitalSignature />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/message"
-          element={
-            <ProtectedRoute>
-              <SecureMessage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/blockchain"
-          element={
-            <ProtectedRoute>
-              <BlockchainLogs />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/tls"
-          element={
-            <ProtectedRoute>
-              <TLSSimulator />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/ipsec"
-          element={
-            <ProtectedRoute>
-              <IPSecSimulator />
-            </ProtectedRoute>
-          }
-        />
+        {/* Unprotected Routes */}
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/intrusion-detection" element={<IntrusionDetection />} />
+        <Route path="/hash" element={<HashGenerator />} />
+        <Route path="/signature" element={<DigitalSignature />} />
+        <Route path="/message" element={<SecureMessage />} />
+        <Route path="/blockchain" element={<BlockchainLogs />} />
+        <Route path="/tls" element={<TLSSimulator />} />
+        <Route path="/ipsec" element={<IPSecSimulator />} />
       </Routes>
     </BrowserRouter>
   );
