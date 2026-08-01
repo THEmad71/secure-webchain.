@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_cors import CORS
 
@@ -6,6 +7,7 @@ from routes.hash_routes import hash_bp
 from routes.signature_routes import signature_bp
 from routes.message_routes import message_bp
 from routes.blockchain_routes import blockchain_bp
+from routes.ids_routes import ids_bp
 
 app = Flask(__name__)
 
@@ -24,6 +26,7 @@ app.register_blueprint(hash_bp, url_prefix="/api/hash")
 app.register_blueprint(signature_bp, url_prefix="/api/signature")
 app.register_blueprint(message_bp, url_prefix="/api/message")
 app.register_blueprint(blockchain_bp, url_prefix="/api/blockchain")
+app.register_blueprint(ids_bp, url_prefix="/api/ids")
 
 @app.route("/")
 def home():
@@ -42,6 +45,7 @@ def show_routes():
     return {"routes": routes}
 
 # Corrected: Added double underscores for the name == main check
-if __name__ == "__main__":
-    app.run(debug=False, host="0.0.0.0", port=5000)
 
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(debug=False, host="0.0.0.0", port=port)

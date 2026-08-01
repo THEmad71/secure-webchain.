@@ -1,0 +1,239 @@
+{
+  "model_name": "Random Forest IDS",
+  "dataset": "UNSW-NB15",
+  "target_mapping": {
+    "0": "Normal",
+    "1": "Attack"
+  },
+  "drop_columns": [
+    "id",
+    "attack_cat"
+  ],
+  "target_column": "label",
+  "feature_columns": [
+    "dur",
+    "proto",
+    "service",
+    "state",
+    "spkts",
+    "dpkts",
+    "sbytes",
+    "dbytes",
+    "rate",
+    "sttl",
+    "dttl",
+    "sload",
+    "dload",
+    "sloss",
+    "dloss",
+    "sinpkt",
+    "dinpkt",
+    "sjit",
+    "djit",
+    "swin",
+    "stcpb",
+    "dtcpb",
+    "dwin",
+    "tcprtt",
+    "synack",
+    "ackdat",
+    "smean",
+    "dmean",
+    "trans_depth",
+    "response_body_len",
+    "ct_srv_src",
+    "ct_state_ttl",
+    "ct_dst_ltm",
+    "ct_src_dport_ltm",
+    "ct_dst_sport_ltm",
+    "ct_dst_src_ltm",
+    "is_ftp_login",
+    "ct_ftp_cmd",
+    "ct_flw_http_mthd",
+    "ct_src_ltm",
+    "ct_srv_dst",
+    "is_sm_ips_ports"
+  ],
+  "categorical_features": [
+    "proto",
+    "service",
+    "state"
+  ],
+  "numeric_features": [
+    "dur",
+    "spkts",
+    "dpkts",
+    "sbytes",
+    "dbytes",
+    "rate",
+    "sttl",
+    "dttl",
+    "sload",
+    "dload",
+    "sloss",
+    "dloss",
+    "sinpkt",
+    "dinpkt",
+    "sjit",
+    "djit",
+    "swin",
+    "stcpb",
+    "dtcpb",
+    "dwin",
+    "tcprtt",
+    "synack",
+    "ackdat",
+    "smean",
+    "dmean",
+    "trans_depth",
+    "response_body_len",
+    "ct_srv_src",
+    "ct_state_ttl",
+    "ct_dst_ltm",
+    "ct_src_dport_ltm",
+    "ct_dst_sport_ltm",
+    "ct_dst_src_ltm",
+    "is_ftp_login",
+    "ct_ftp_cmd",
+    "ct_flw_http_mthd",
+    "ct_src_ltm",
+    "ct_srv_dst",
+    "is_sm_ips_ports"
+  ],
+  "metrics": {
+    "accuracy": 0.9508877461919084,
+    "precision": 0.9509560303797193,
+    "recall": 0.9508877461919084,
+    "f1_score": 0.9509176565901278,
+    "train_time_seconds": 18.621321201324463,
+    "predict_time_seconds": 0.5518460273742676,
+    "total_time_seconds": 19.17316722869873,
+    "roc_auc": 0.9917618451789203
+  },
+  "example_input": {
+    "dur": 0.615819,
+    "proto": "tcp",
+    "service": "http",
+    "state": "FIN",
+    "spkts": 10,
+    "dpkts": 10,
+    "sbytes": 954,
+    "dbytes": 1334,
+    "rate": 30.853223,
+    "sttl": 62,
+    "dttl": 252,
+    "sload": 11159.12305,
+    "dload": 15601.98731,
+    "sloss": 2,
+    "dloss": 2,
+    "sinpkt": 68.424333,
+    "dinpkt": 57.317891,
+    "sjit": 4287.301087,
+    "djit": 113.456734,
+    "swin": 255,
+    "stcpb": 2183988215,
+    "dtcpb": 225286235,
+    "dwin": 255,
+    "tcprtt": 0.094157,
+    "synack": 0.033714,
+    "ackdat": 0.060443,
+    "smean": 95,
+    "dmean": 133,
+    "trans_depth": 1,
+    "response_body_len": 201,
+    "ct_srv_src": 1,
+    "ct_state_ttl": 1,
+    "ct_dst_ltm": 1,
+    "ct_src_dport_ltm": 1,
+    "ct_dst_sport_ltm": 1,
+    "ct_dst_src_ltm": 1,
+    "is_ftp_login": 0,
+    "ct_ftp_cmd": 0,
+    "ct_flw_http_mthd": 1,
+    "ct_src_ltm": 2,
+    "ct_srv_dst": 1,
+    "is_sm_ips_ports": 0
+  },
+  "top_features": [
+    {
+      "feature_clean": "sttl",
+      "importance": 0.0725085715638364
+    },
+    {
+      "feature_clean": "ct_state_ttl",
+      "importance": 0.07127713664370335
+    },
+    {
+      "feature_clean": "rate",
+      "importance": 0.055349321271892626
+    },
+    {
+      "feature_clean": "sbytes",
+      "importance": 0.04527803324603779
+    },
+    {
+      "feature_clean": "sload",
+      "importance": 0.04488146067759666
+    },
+    {
+      "feature_clean": "smean",
+      "importance": 0.044173013176129296
+    },
+    {
+      "feature_clean": "dload",
+      "importance": 0.04156080663835404
+    },
+    {
+      "feature_clean": "ct_srv_dst",
+      "importance": 0.039933196928201055
+    },
+    {
+      "feature_clean": "ct_dst_src_ltm",
+      "importance": 0.03859350207588911
+    },
+    {
+      "feature_clean": "dmean",
+      "importance": 0.032411476412660824
+    },
+    {
+      "feature_clean": "ct_srv_src",
+      "importance": 0.032077007093208224
+    },
+    {
+      "feature_clean": "state_INT",
+      "importance": 0.029807095263184716
+    },
+    {
+      "feature_clean": "dpkts",
+      "importance": 0.027825319661056364
+    },
+    {
+      "feature_clean": "dur",
+      "importance": 0.027108958605362953
+    },
+    {
+      "feature_clean": "synack",
+      "importance": 0.02612757161551502
+    },
+    {
+      "feature_clean": "tcprtt",
+      "importance": 0.02611245350091727
+    },
+    {
+      "feature_clean": "sinpkt",
+      "importance": 0.024935460199358696
+    },
+    {
+      "feature_clean": "ackdat",
+      "importance": 0.02317369979371498
+    },
+    {
+      "feature_clean": "dbytes",
+      "importance": 0.022978522031631737
+    },
+    {
+      "feature_clean": "dinpkt",
+      "importance": 0.02147918673801966
+    }
+  ]
+}
