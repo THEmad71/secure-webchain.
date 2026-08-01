@@ -7,8 +7,7 @@ blockchain_bp = Blueprint("blockchain", __name__)
 
 # In-memory blockchain logs
 # Server restart দিলে logs reset হয়ে যাবে
-blockchain = []
-
+blockchain = [] 
 
 def calculate_hash(block):
     block_string = json.dumps(
@@ -23,7 +22,6 @@ def calculate_hash(block):
     ).encode("utf-8")
     return hashlib.sha256(block_string).hexdigest()
 
-
 def create_genesis_block():
     genesis_block = {
         "index": 0,
@@ -35,11 +33,9 @@ def create_genesis_block():
     genesis_block["hash"] = calculate_hash(genesis_block)
     return genesis_block
 
-
 def initialize_chain():
     if len(blockchain) == 0:
         blockchain.append(create_genesis_block())
-
 
 @blockchain_bp.route("/test", methods=["GET"])
 def blockchain_test():
@@ -47,7 +43,6 @@ def blockchain_test():
         "status": "success",
         "message": "Blockchain route working"
     })
-
 
 @blockchain_bp.route("/logs", methods=["GET"])
 def get_logs():
@@ -57,20 +52,24 @@ def get_logs():
         "length": len(blockchain)
     })
 
-
-@blockchain_bp.route("/add-log", methods=["POST"])
+@blockchain_bp.route("/add-log", methods=["POST", "OPTIONS"])
 def add_log():
+    # Vercel frontend থেকে preflight OPTIONS request এলে OK response দেবে
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+        
     initialize_chain()
-    data = request.json
+    
+    data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "No JSON data received"}), 400
-
+        
     activity = data.get("activity")
     log_data = data.get("data")
-
+    
     if not activity or not log_data:
         return jsonify({"error": "activity and data are required"}), 400
-
+        
     previous_block = blockchain[-1]
     new_block = {
         "index": len(blockchain),
@@ -81,12 +80,11 @@ def add_log():
     }
     new_block["hash"] = calculate_hash(new_block)
     blockchain.append(new_block)
-
+    
     return jsonify({
         "message": "Log added successfully",
         "block": new_block
     }), 201
-
 
 @blockchain_bp.route("/validate", methods=["GET"])
 def validate_chain():
@@ -94,7 +92,7 @@ def validate_chain():
     for i in range(1, len(blockchain)):
         current_block = blockchain[i]
         previous_block = blockchain[i - 1]
-
+        
         # Check current block hash
         recalculated_hash = calculate_hash(current_block)
         if current_block["hash"] != recalculated_hash:
@@ -102,14 +100,14 @@ def validate_chain():
                 "valid": False,
                 "message": f"Block {i} hash is invalid"
             })
-
+            
         # Check previous hash link
         if current_block["previous_hash"] != previous_block["hash"]:
             return jsonify({
                 "valid": False,
                 "message": f"Block {i} previous hash does not match"
             })
-
+            
     return jsonify({
         "valid": True,
         "message": "Blockchain log is valid"
